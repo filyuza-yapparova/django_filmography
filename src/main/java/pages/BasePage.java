@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+
 import static constants.Constant.TimeoutVariables.EXPLICIT_WAIT;
 import static constants.Constant.Variables.*;
 
@@ -25,10 +26,12 @@ public class BasePage {
     public final By charactersPageButton = By.xpath("//tr/th/a[contains(text(),'Characters')]");
     public final By directorsPageButton = By.xpath("//tr/th/a[contains(text(),'Directors')]");
     public final By moviesPageButton = By.xpath("//tr/th/a[contains(text(),'Movies')]");
+
     public final By pageTitle(String value) {
         By page = By.xpath("//tr/th/a[contains(text(),'" + value + "')]");
         return page;
     }
+
     public final By saveButton = By.name("_save");
     public final By saveAndContinueEditingButton = By.name("_continue");
     public final By saveAndAddAnotherButton = By.name("_addanother");
@@ -37,8 +40,9 @@ public class BasePage {
     /**
      * Method for navigating to a specific URL
      */
-    public void goToUrl(String url) {
+    public BasePage goToUrl(String url) {
         driver.get(url);
+        return this;
     }
 
     /**
@@ -49,15 +53,17 @@ public class BasePage {
         return element;
     }
 
-    public void isEntryAdditionButtonPresent() {
+    public BasePage isEntryAdditionButtonPresent() {
         waitElementIsVisible(driver.findElement(addNewEntryButton));
+        return this;
     }
 
-    public void openPage(By element) {
+    public BasePage openPage(By element) {
         driver.findElement(element).click();
+        return this;
     }
 
-    public void isPageTitleChanged(String page) {
+    public BasePage isPageTitleChanged(String page) {
         switch (page) {
             case "actors" -> page = ACTORS;
             case "characters" -> page = CHARACTERS;
@@ -66,5 +72,6 @@ public class BasePage {
             default -> Assertions.fail("INCORRECT PAGE NAME =>> '" + page + "'");
         }
         waitElementIsVisible(driver.findElement(pageTitle(page)));
+        return this;
     }
 }

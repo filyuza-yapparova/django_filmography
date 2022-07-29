@@ -1,5 +1,6 @@
 package tests.base;
 
+import com.github.javafaker.Faker;
 import common.CommonActions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import pages.*;
+
+import java.util.Random;
 
 import static common.Config.CLEAR_COOKIES;
 import static common.Config.HOLD_BROWSER_OPEN;
@@ -21,6 +24,8 @@ public class BaseTest {
     protected ActorsPage actorsPage = new ActorsPage(driver);
     protected CharactersPage charactersPage = new CharactersPage(driver);
     protected MoviesPage moviesPage = new MoviesPage(driver);
+    protected Faker faker = new Faker();
+    protected Random randomizer = new Random();
 
     @BeforeAll
     void openMainPage() {

@@ -29,13 +29,38 @@ public class ActorsPositiveTests extends BaseTest {
                 .birthdate(LocalDate.of(1962, 7, 3))
                 .gender("Male")
                 .build();
-        actorsPage.addNewActor(actor);
+        actorsPage.addNewActor(actor)
 
-//        actorsPage.addNewActor(new Actor("Thomas", "Cruise", LocalDate.of(1962, 7, 3), "Male"));
-        actorsPage.saveActor();
-        actorsPage.isAddedActorPresent(actor);
-        actorsPage.actorAddedSuccessfullyNotificationIsShown(actor);
-        actorsPage.deleteAddedActor();
-        actorsPage.actorDeletedSuccessfullyNotificationIsShown(actor);
+//        actorsPage.addNewActor(new Actor("Thomas", "Cruise", LocalDate.of(1962, 7, 3), "Male"))
+                .saveActor()
+                .isAddedActorPresent(actor)
+                .actorAddedSuccessfullyNotificationIsShown(actor)
+                .deleteAddedActor(actor)
+                .actorDeletedSuccessfullyNotificationIsShown(actor);
+    }
+
+    @Test
+    public void deleteAllActors() {
+        basePage.goToUrl(ACTORS_URL);
+        actorsPage.deleteAllActors()
+                .watchActorList();
+    }
+
+    @Test
+    public void editExistingActor() {
+        basePage.goToUrl(ACTORS_URL);
+        LocalDate.from(faker.date().birthday(12, 85).toInstant());
+        var actor = Actor.builder()
+                .firstname(faker.name().firstName())
+                .lastname(faker.name().lastName())
+                .birthdate(LocalDate.from(faker.date().birthday(12, 85).toInstant()))
+                .gender("Male")
+                .build();
+        actorsPage.addNewActor(actor)
+                .saveActor()
+                .isAddedActorPresent(actor)
+                .actorAddedSuccessfullyNotificationIsShown(actor)
+                .editActor(actor)
+                .actorEditedSuccessfullyNotificationIsShown(actor);
     }
 }

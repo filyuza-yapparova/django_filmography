@@ -16,10 +16,11 @@ public class LoginPage extends BasePage{
         super(driver);
     }
 
-    public void login() {
+    public LoginPage login() {
         waitElementIsVisible(driver.findElement(loginTextField));
         driver.findElement(loginTextField).sendKeys(USER_LOGIN);
         driver.findElement(passwordTextField).sendKeys(USER_PASSWORD);
         driver.findElement(loginButton).click();
+        return this;
     }
 }
