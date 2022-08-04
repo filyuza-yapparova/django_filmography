@@ -1,11 +1,14 @@
 package pages;
 
+import constants.Constant.NotificationType;
 import entities.Actor;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import java.time.format.DateTimeFormatter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActorsPage extends BasePage {
     public ActorsPage(WebDriver driver) {
@@ -63,8 +66,8 @@ public class ActorsPage extends BasePage {
     public final By actorsNumberInList = By.xpath("//div[contains(@class,'results')]" +
             "/following-sibling::*");
 
-    public final By validationNotificationBelowForm = By.xpath("//div/form [@id=\"actor_form\"]/div" +
-            "/p [@class=\"errornote\"][contains(text(),\"Please correct the error below.\"]");
+    public final By validationNotificationBelowForm = By.xpath("//div/form[@id=\"actor_form\"]" +
+            "/div/p[@class=\"errornote\"][contains(text(),'Please correct the errors below.')]");
 
     public final By errorInSomeActorField = By.xpath("//div/ul[@class=\"errorlist\"]");
 

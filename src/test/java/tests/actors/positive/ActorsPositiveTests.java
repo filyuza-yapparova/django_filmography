@@ -1,10 +1,9 @@
 package tests.actors.positive;
 
+import constants.Constant.NotificationType;
 import entities.Actor;
 import org.junit.jupiter.api.Test;
 import tests.base.BaseTest;
-
-import java.time.LocalDate;
 
 import static constants.Constant.Urls.ACTORS_URL;
 
@@ -21,46 +20,39 @@ public class ActorsPositiveTests extends BaseTest {
     }
 
     @Test
-    public void addingNewActor() {
+    public void addNewActor() {
         basePage.goToUrl(ACTORS_URL);
-        var actor = Actor.builder()
-                .firstname("Thomas")
-                .lastname("Cruise")
-                .birthdate(LocalDate.of(1962, 7, 3))
-                .gender("Male")
-                .build();
+        Actor actor = Actor.createTomCruise();
         actorsPage.addNewActor(actor)
-
-//        actorsPage.addNewActor(new Actor("Thomas", "Cruise", LocalDate.of(1962, 7, 3), "Male"))
                 .saveActor()
-                .isAddedActorPresent(actor)
-                .actorAddedSuccessfullyNotificationIsShown(actor)
-                .deleteAddedActor(actor)
-                .actorDeletedSuccessfullyNotificationIsShown(actor);
+                .isActorPresent(actor)
+                .notificationIsShown(NotificationType.ADD, actor)
+                .deleteSingleActor(actor)
+                .actorDeletedSuccessfullyNotificationIsShown();
     }
 
     @Test
     public void deleteAllActors() {
         basePage.goToUrl(ACTORS_URL);
-        actorsPage.deleteAllActors()
-                .watchActorList();
+        for (int i = 0; i < 7; i++) {
+            actorsPage.createActorAndSave(Actor.createFakeActor());
+        }
+        actorsPage.deleteAllActorsAndCheckDeletedCount();
     }
 
     @Test
     public void editExistingActor() {
         basePage.goToUrl(ACTORS_URL);
-        LocalDate.from(faker.date().birthday(12, 85).toInstant());
-        var actor = Actor.builder()
-                .firstname(faker.name().firstName())
-                .lastname(faker.name().lastName())
-                .birthdate(LocalDate.from(faker.date().birthday(12, 85).toInstant()))
-                .gender("Male")
-                .build();
+        Actor actor = Actor.createTomCruise();
         actorsPage.addNewActor(actor)
                 .saveActor()
-                .isAddedActorPresent(actor)
-                .actorAddedSuccessfullyNotificationIsShown(actor)
-                .editActor(actor)
-                .actorEditedSuccessfullyNotificationIsShown(actor);
+                .isActorPresent(actor)
+                .notificationIsShown(NotificationType.ADD, actor);
+        Actor updatedActor = Actor.createFakeActor();
+        actorsPage.editActor(actor, updatedActor)
+                .notificationIsShown(NotificationType.EDIT, updatedActor)
+                .isActorPresent(updatedActor)
+                .deleteSingleActor(updatedActor)
+                .actorDeletedSuccessfullyNotificationIsShown();
     }
 }

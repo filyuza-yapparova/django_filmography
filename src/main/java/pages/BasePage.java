@@ -1,8 +1,6 @@
 package pages;
 
-import constants.Constant;
 import constants.Constant.NotificationType;
-import entities.Actor;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -39,6 +37,7 @@ public class BasePage {
     public final By saveButton = By.name("_save");
     public final By saveAndContinueEditingButton = By.name("_continue");
     public final By saveAndAddAnotherButton = By.name("_addanother");
+
     /**
      * Successful notification locator
      */
