@@ -24,8 +24,6 @@ public class BaseTest {
     protected ActorsPage actorsPage = new ActorsPage(driver);
     protected CharactersPage charactersPage = new CharactersPage(driver);
     protected MoviesPage moviesPage = new MoviesPage(driver);
-    protected Faker faker = new Faker();
-    protected Random randomizer = new Random();
 
     @BeforeAll
     void openMainPage() {

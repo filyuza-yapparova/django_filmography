@@ -1,5 +1,9 @@
 package constants;
 
+import com.google.errorprone.annotations.Var;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 public class Constant {
     public static class TimeoutVariables {
         public static final int IMPLICIT_WAIT = 5;
@@ -22,7 +26,17 @@ public class Constant {
         public static final String CHARACTERS = "Characters";
         public static final String MOVIES = "Movies";
         public static final String DIRECTORS = "Directors";
+        public static final String ADDED_SUCCESSFULLY_NOTIFICATION_TEXT = "The %s “%s” was added successfully.";
+        public static final String EDITED_SUCCESSFULLY_NOTIFICATION_TEXT = "The %s “%s” was changed successfully.";
+        //public static final String DELETED_SUCCESSFULLY_NOTIFICATION_TEXT = "";
+    }
 
-
+    @RequiredArgsConstructor
+    @Getter
+    public enum NotificationType {
+        ADD(Variables.ADDED_SUCCESSFULLY_NOTIFICATION_TEXT),
+        EDIT(Variables.EDITED_SUCCESSFULLY_NOTIFICATION_TEXT);
+        //DELETE(Variables.DELETED_SUCCESSFULLY_NOTIFICATION_TEXT);
+        private final String text;
     }
 }
