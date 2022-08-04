@@ -12,9 +12,9 @@ public class ActorsPage extends BasePage {
         super(driver);
     }
 
-
-
-    public final By actorInList = By.xpath("");
+    /**
+     * Actor field's locators
+     */
     public final By actorFirstNameTextField = By.name("firstname");
     public final By actorLastNameTextField = By.name("lastname");
     public final By actorBirthdate = By.name("date_of_birth");
@@ -31,11 +31,17 @@ public class ActorsPage extends BasePage {
         return By.xpath("//select/option[@value='" + value + "']");
     }
 
+    /**
+     * Searching actor locator by actor's
+     * @param fullname
+     */
     public final By actorInList(String fullname) {
         return By.xpath("//table/tbody/tr/th/a[contains(text(),'" + fullname + "')]");
     }
 
-
+    /**
+     * Checkbox locators
+     */
     public final By allActorCheckbox = By.xpath("//tr/th/div/span/input[@type=\"checkbox\"]");
 
     public final By actorCheckbox(Actor actor) {
@@ -44,6 +50,9 @@ public class ActorsPage extends BasePage {
                 + "\")]/parent::*/parent::*/td/input [@type=\"checkbox\"]");
     }
 
+    /**
+     * Action buttons locators (that needs to delete item)
+     */
     public final By actionList = By.xpath("//label/select[@name='action']");
     public final By deleteAction = By.xpath("//label/select/option[@value='delete_selected']");
     public final By goButton = By.xpath("//div/button[@type='submit']");
@@ -80,22 +89,46 @@ public class ActorsPage extends BasePage {
         return this;
     }
 
+    /**
+     * Clicking on Add new button with filling actor fields
+     */
     public ActorsPage addNewActor(Actor actor) {
         driver.findElement(addNewEntryButton).click();
         fillActorFields(actor);
         return this;
     }
 
+    /**
+     * Fast actor creating with auto save action
+     */
+    public ActorsPage createActorAndSave(Actor actor) {
+        driver.findElement(addNewEntryButton).click();
+        fillActorFields(actor);
+        driver.findElement(saveButton).click();
+        return this;
+    }
+
+    /**
+     * Save action
+     */
     public ActorsPage saveActor() {
         driver.findElement(saveButton).click();
         return this;
     }
 
-    public ActorsPage isAddedActorPresent(Actor actor) {
-        waitElementIsVisible(driver.findElement(actorInList(actor.getFirstname() + " " + actor.getLastname())));
+    /**
+     * Checking is actor presents in table (looking only on fullname)
+     * @param actor Takes first actor with similar fullname
+     *              (we are working with table as there is only one actor with that fullname)
+     */
+    public ActorsPage isActorPresent(Actor actor) {
+        waitElementIsVisible(driver.findElement(actorInList(actor.getFullname())));
         return this;
     }
 
+    /**
+     * Delete action (choosing to delete action with submitting action
+     */
     public void deleteAction() {
         driver.findElement(actionList).click();
         driver.findElement(deleteAction).click();
@@ -103,45 +136,114 @@ public class ActorsPage extends BasePage {
         driver.findElement(submitDeletion).click();
     }
 
-    public ActorsPage deleteAddedActor(Actor actor) {
+    /**
+     * Deleting one actor by his fullname
+     * @param actor takes FIRST actor by his fullname
+     *              (there can be more than one actor with similar fullname,
+     *              but we are working with table as there is only one actor with this name)
+     */
+    public ActorsPage deleteSingleActor(Actor actor) {
         driver.findElement(actorCheckbox(actor)).click();
         deleteAction();
         return this;
     }
 
+    /**
+     * Deleting all actors without any checking before and after
+     */
     public ActorsPage deleteAllActors() {
         driver.findElement(allActorCheckbox).click();
         deleteAction();
         return this;
     }
 
-    public ActorsPage actorAddedSuccessfullyNotificationIsShown(Actor actor) {
-        waitElementIsVisible(driver.findElement(actorAddedSuccessfullyNotification(actor)));
+    /**
+     * Deleting all actors with checking actors count
+     * before (in table list)
+     * and
+     * after (in deleting notification)
+     */
+    public ActorsPage deleteAllActorsAndCheckDeletedCount() {
+        var countOfActorsBeforeDeleting = watchActorList("before");
+        deleteAllActors();
+        var countOfDeletedActors = watchActorList("after");
+        assertThat(countOfActorsBeforeDeleting).isEqualTo(countOfDeletedActors);
         return this;
     }
 
-    public ActorsPage actorDeletedSuccessfullyNotificationIsShown(Actor actor) {
-        waitElementIsVisible(driver.findElement(actorDeletedSuccessfullyNotification(actor)));
+    /**
+     * Default method for notification that shown after successfully adding or editing actor
+     * @param notificationType takes on of the enums ADD, EDIT or DELETE (last is not working yet)
+     * @param actor takes one actor which we are working with
+     */
+    public ActorsPage notificationIsShown(NotificationType notificationType, Actor actor) {
+        notificationIsShown(notificationType, "actor", actor.getFullname());
         return this;
     }
 
+    /**
+     * Waiting for notification that shown after successfully deleting action
+     */
+    public ActorsPage actorDeletedSuccessfullyNotificationIsShown() {
+        waitElementIsVisible(driver.findElement(actorDeletedSuccessfullyNotification));
+        return this;
+    }
+
+    /**
+     * Edit existing
+     * @param actor to
+     * @param updatedActor
+     */
     public ActorsPage editActor(Actor actor, Actor updatedActor) {
         findActorInActorList(actor.getFirstname(), actor.getLastname());
         fillActorFields(updatedActor);
         return this;
     }
 
-    public ActorsPage findActorInActorList(String firstname, String lastname) {
-        driver.findElement(actorInList).click();
+    /**
+     * Searching and opening existing
+     * @param actor
+     */
+    public ActorsPage findActorInActorList(Actor actor) {
+        driver.findElement(actorInList(actor.getFullname())).click();
         return this;
     }
 
-    public ActorsPage actorEditedSuccessfullyNotificationIsShown(Actor actor) {
-        waitElementIsVisible(driver.findElement(actorEditedSuccessfullyNotification(actor)));
+    /**
+     * Clear all actor fields (for example for editing)
+     */
+    public ActorsPage clearActorFields() {
+        driver.findElement(actorFirstNameTextField).clear();
+        driver.findElement(actorLastNameTextField).clear();
+        driver.findElement(actorBirthdate).clear();
         return this;
     }
 
-    public void watchActorList() {
+    /**
+     * Checking count of actors before and after deleting
+     * @param type selects locator where we are looking count - table bottom or notification
+     */
+    public Integer watchActorList(String type) {
+        if (type.equals("before")) {
+            return Integer.valueOf(driver.findElement(actorsNumberInList)
+                    .getText().split(" ")[0]
+            );
+        } else if (type.equals("after")) {
+            return Integer.valueOf(driver.findElement(actorDeletedSuccessfullyNotification)
+                    .getText().split(" ")[2]
+            );
+        } else {
+            System.out.println("INCORRECT STRING -> " + type);
+            return 0;
+        }
+    }
 
+    /**
+     * Waiting for some validation error and notification
+     */
+    public ActorsPage fieldValidationIsShown() {
+        waitElementIsVisible(driver.findElement(validationNotificationBelowForm));
+        waitElementIsVisible(driver.findElement(errorInSomeActorField));
+        return this;
     }
 }
