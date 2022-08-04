@@ -19,7 +19,6 @@ public class ActorsPage extends BasePage {
     public final By actorLastNameTextField = By.name("lastname");
     public final By actorBirthdate = By.name("date_of_birth");
     public final By genderList = By.name("gender");
-
     public final By gender(String value) {
         if (value.equals("Female")) {
             value = "F";
@@ -43,10 +42,9 @@ public class ActorsPage extends BasePage {
      * Checkbox locators
      */
     public final By allActorCheckbox = By.xpath("//tr/th/div/span/input[@type=\"checkbox\"]");
-
     public final By actorCheckbox(Actor actor) {
         return By.xpath("//tbody/tr/th/a[contains (text(), \""
-                + actor.getFirstname() + " " + actor.getLastname()
+                + actor.getFullname()
                 + "\")]/parent::*/parent::*/td/input [@type=\"checkbox\"]");
     }
 
@@ -57,29 +55,22 @@ public class ActorsPage extends BasePage {
     public final By deleteAction = By.xpath("//label/select/option[@value='delete_selected']");
     public final By goButton = By.xpath("//div/button[@type='submit']");
 
-    public final By actorAddedSuccessfullyNotification(Actor actor) {
-        return By.xpath("//div/div/ul/li[@class=\"success\"]" +
-                "[contains(text(),'The actor')]/a[contains(text(),'"
-                + actor.getFirstname() + " " + actor.getLastname()
-                + "')]/following-sibling::text()[contains(., 'was added successfully.')]");
-    }
 
-    public final By actorEditedSuccessfullyNotification(Actor actor) {
-        return By.xpath("//div/div/ul/li[@class=\"success\"]" +
-                "[contains(text(),'The actor')]/a[contains(text(),'"
-                + actor.getFirstname() + " " + actor.getLastname()
-                + "')]/following-sibling::text()[contains(., 'was changed successfully.')]");
-    }
-
-    public final By actorDeletedSuccessfullyNotification(Actor actor) {
-        return By.xpath("//div/ul/li[contains(text(),'Successfully deleted 1 actor.')]");
-    }
+    public final By actorDeletedSuccessfullyNotification = By.xpath("//div[@class=\"content\"]/ul[@class=\"messagelist\"]/li[@class=\"success\"]");
 
     public final By submitDeletion = By.xpath("//div/input[@type='submit']");
 
     public final By actorsNumberInList = By.xpath("//div[contains(@class,'results')]" +
-                "/following-sibling::*");
+            "/following-sibling::*");
 
+    public final By validationNotificationBelowForm = By.xpath("//div/form [@id=\"actor_form\"]/div" +
+            "/p [@class=\"errornote\"][contains(text(),\"Please correct the error below.\"]");
+
+    public final By errorInSomeActorField = By.xpath("//div/ul[@class=\"errorlist\"]");
+
+    /**
+     * Filling actor fields
+     */
     public ActorsPage fillActorFields(Actor actor) {
         driver.findElement(actorFirstNameTextField).sendKeys(actor.getFirstname());
         driver.findElement(actorLastNameTextField).sendKeys(actor.getLastname());
@@ -195,8 +186,10 @@ public class ActorsPage extends BasePage {
      * @param updatedActor
      */
     public ActorsPage editActor(Actor actor, Actor updatedActor) {
-        findActorInActorList(actor.getFirstname(), actor.getLastname());
+        findActorInActorList(actor);
+        clearActorFields();
         fillActorFields(updatedActor);
+        saveActor();
         return this;
     }
 

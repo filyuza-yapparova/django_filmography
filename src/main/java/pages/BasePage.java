@@ -1,5 +1,8 @@
 package pages;
 
+import constants.Constant;
+import constants.Constant.NotificationType;
+import entities.Actor;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 
 import static constants.Constant.TimeoutVariables.EXPLICIT_WAIT;
 import static constants.Constant.Variables.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasePage {
     protected WebDriver driver;
@@ -35,7 +39,10 @@ public class BasePage {
     public final By saveButton = By.name("_save");
     public final By saveAndContinueEditingButton = By.name("_continue");
     public final By saveAndAddAnotherButton = By.name("_addanother");
-
+    /**
+     * Successful notification locator
+     */
+    public final By successfulNotification = By.xpath("//div/div/ul/li[@class=\"success\"]");
 
     /**
      * Method for navigating to a specific URL
@@ -72,6 +79,14 @@ public class BasePage {
             default -> Assertions.fail("INCORRECT PAGE NAME =>> '" + page + "'");
         }
         waitElementIsVisible(driver.findElement(pageTitle(page)));
+        return this;
+    }
+
+    public BasePage notificationIsShown(NotificationType notificationType, String entityType, String entityText) {
+        var notification = driver.findElement(successfulNotification);
+        waitElementIsVisible(notification);
+        var text = notification.getText();
+        assertThat(text).isEqualTo(notificationType.getText(), entityType, entityText);
         return this;
     }
 }
