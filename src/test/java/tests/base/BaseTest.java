@@ -11,6 +11,7 @@ import pages.*;
 
 import java.util.Random;
 
+import static com.codeborne.selenide.Selenide.open;
 import static common.Config.CLEAR_COOKIES;
 import static common.Config.HOLD_BROWSER_OPEN;
 import static constants.Constant.Urls.MAIN_URL;
@@ -27,7 +28,7 @@ public class BaseTest {
 
     @BeforeAll
     void openMainPage() {
-        basePage.goToUrl(MAIN_URL);
+        open(MAIN_URL);
     }
 
     @BeforeEach

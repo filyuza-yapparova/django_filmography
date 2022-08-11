@@ -58,14 +58,22 @@ public class ActorsPage extends BasePage {
     public final By deleteAction = By.xpath("//label/select/option[@value='delete_selected']");
     public final By goButton = By.xpath("//div/button[@type='submit']");
 
-
+    /**
+     * Deletion notification
+     */
     public final By actorDeletedSuccessfullyNotification = By.xpath("//div[@class=\"content\"]/ul[@class=\"messagelist\"]/li[@class=\"success\"]");
 
     public final By submitDeletion = By.xpath("//div/input[@type='submit']");
 
+    /**
+     * Locator of rows number in actors table
+     */
     public final By actorsNumberInList = By.xpath("//div[contains(@class,'results')]" +
             "/following-sibling::*");
 
+    /**
+     * Validation error locators
+     */
     public final By validationNotificationBelowForm = By.xpath("//div/form[@id=\"actor_form\"]" +
             "/div/p[@class=\"errornote\"][contains(text(),'Please correct the errors below.')]");
 
